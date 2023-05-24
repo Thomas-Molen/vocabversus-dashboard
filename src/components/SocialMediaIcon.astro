@@ -1,0 +1,19 @@
+---
+export interface Props {
+    href?: string;
+}
+
+const { href = "javascript:void(0);" } = Astro.props;
+---
+
+<a class="btn btn-outline-dark rounded-circle social-media-icon" href={href} target="_blank">
+    <slot />
+</a>
+
+<style>
+    .social-media-icon {
+        color: var(--vv-white);
+        font-size: 50px;
+        padding: 0px;
+    }
+</style>

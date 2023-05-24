@@ -1,0 +1,153 @@
+---
+import WordSetList from "./WordSetList.astro";
+import Collapse from "./Collapse.astro";
+---
+<div class="p-4 create-game">
+    <h1 style="font-size: 2.5rem;">Create a game</h1>
+    <form id="create-game-form">
+        <div class="mb-2">
+            <WordSetList id="wordset-input" />
+        </div>
+
+        <div class="input-group mb-2">
+            <span class="input-group-text" id="rounds-field">Rounds</span>
+            <input type="number" required min="1" value="20" class="form-control" id="rounds-input" placeholder="Rounds" aria-describedby="rounds-field">
+        </div>
+
+        <div class="input-group">
+            <span class="input-group-text" id="players-field">Players</span>
+            <input type="number" required min="1" max="100" value="5" class="form-control" id="players-input" placeholder="Players" aria-describedby="players-field">
+        </div>
+
+        <div>
+            <Collapse title="advanced">
+                <div class="ms-1">
+                    <span class="form-text">Delay in seconds before next round starts</span>
+                    <div class="input-group">
+                        <span class="input-group-text" id="round-delay-field">Count down</span>
+                        <input type="number" required min="0" value="5" class="form-control" id="round-delay-input" placeholder="Seconds" aria-describedby="round-delay-field">
+                    </div>
+
+                    <span class="form-text"><i>(inclusive-)</i>Min and Max possible required characters</span>
+                    <div class="input-group">
+                        <span class="input-group-text" id="allowed-characters-field">Characters</span>
+                        <input type="number" required min="1" value="1" class="form-control" id="min-characters-input" placeholder="Minimum" aria-describedby="allowed-characters-field">
+                        <input type="number" required min="1" value="3" class="form-control" id="max-characters-input" placeholder="Maximum" aria-describedby="allowed-characters-field">
+                    </div>
+
+                    <span class="form-text">Words will be recognized with minor spelling mistakes</span>
+                    <div class="input-group">
+                        <span class="input-group-text" id="character-mistake-correction-field">Incorrect Spelling</span>
+                        <div class="input-group-text" style="background-color: #00000000">
+                            <input class="form-check-input mt-0" type="checkbox" id="character-mistake-correction" aria-describedby="character-mistake-correction-field">
+                        </div>
+                    </div>
+                </div>
+            </Collapse>
+        </div>
+        <div class="mt-3">
+            <div id="create-game-error" class="alert alert-danger p-2 d-flex align-items-center" role="alert" style="display: none !important">
+                <div>
+                    <b>Failed to create game</b><br />
+                    <small>Please check selected options, or try again later</small>
+                </div>
+            </div>
+            <button id="create-game-button" class="w-100 btn btn-outline-light" type="submit">Create</button>
+        </div>
+    </form>
+</div>
+
+<style>
+    .create-game {
+        background-image: url("/assets/squares.svg");
+        background-position-y: bottom;
+        background-repeat: no-repeat;
+        background-size: contain;
+    }
+</style>
+
+<script>
+    type StartGameRequest = {
+        WordSet: string;
+        MaxPlayerCount: number;
+        Rounds: number;
+        Settings: GameSettings;
+    };
+    type GameSettings = {
+        RoundEndDelay: number;
+        MinRequiredChars: number;
+        MaxRequiredChars: number;
+        IncorrectCharsMargin: number;
+    };
+
+    type StartGameResponse = {
+        gameId: string;
+    };
+
+    document
+        .getElementById("create-game-form")
+        ?.addEventListener("submit", (event) => {
+            event.preventDefault();
+            createGame();
+        });
+
+    async function createGame() {
+        // Set visual button indicator
+        const createGameButton = document.getElementById("create-game-button") as HTMLButtonElement | null;
+        const targetButtonText = createGameButton?.innerText ?? "";
+        if (createGameButton) {
+            createGameButton.innerText = "Creating game...";
+            createGameButton.disabled = true;
+        }
+
+        // ensure error message is not shown
+        (document.getElementById("create-game-error") as HTMLButtonElement | null)?.style.setProperty("display", "none", "important");
+
+        const request: StartGameRequest = {
+            WordSet: (document.getElementById("wordset-input") as HTMLInputElement | null)?.value ?? "", 
+            Rounds: parseInt((document.getElementById("rounds-input") as HTMLInputElement | null)?.value ?? "20"),
+            MaxPlayerCount: parseInt((document.getElementById("players-input") as HTMLInputElement | null)?.value ?? "4"),
+            Settings: {
+                RoundEndDelay: parseInt((document.getElementById("round-delay-input") as HTMLInputElement | null)?.value ?? "4"),
+                MinRequiredChars: parseInt((document.getElementById("min-characters-input") as HTMLInputElement | null)?.value ?? "4"),
+                MaxRequiredChars: parseInt((document.getElementById("max-characters-input") as HTMLInputElement | null)?.value ?? "4"),
+                IncorrectCharsMargin: (document.getElementById("character-mistake-correction") as HTMLInputElement | null)?.checked ? 1 : 0 ?? 0,
+            },
+        };
+
+        await fetch(
+            import.meta.env.PUBLIC_GAME_HUB_BASE_URL + "/api/Hub/initialize",
+            {
+                method: "POST",
+                body: JSON.stringify(request),
+                headers: { "Content-Type": "application/json" },
+            })
+            // Parse the response into typescript type
+            .then((response) => {
+                if (!response.ok)
+                    throw new Error("Failed to initialize game hub");
+                return response.json();
+            })
+            .then((json) => json as StartGameResponse)
+            // Redirect user to game interface
+            .then((response) => {
+                window.location.href = import.meta.env.PUBLIC_GAME_INTERFACE_BASE_URL + "/" + response.gameId;
+
+                // reset create button
+                if (createGameButton) {
+                    createGameButton.innerText = "Redirecting";
+                }
+            })
+            // If game could not be initialized, reset button indicator
+            .catch((error) => {
+                // show error message
+                (document.getElementById("create-game-error") as HTMLButtonElement | null)?.style.setProperty("display", "flex", "important");
+
+                // reset create button
+                if (createGameButton) {
+                    createGameButton.innerText = targetButtonText;
+                    createGameButton.disabled = false;
+                }
+            })
+    }
+</script>

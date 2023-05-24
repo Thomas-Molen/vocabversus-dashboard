@@ -1,0 +1,80 @@
+---
+export interface Props {
+    title: string;
+    open?: boolean;
+}
+
+const { title, open = false } = Astro.props;
+---
+
+<span>
+    <div class="collapseable-header no-select" tabindex="0">{open ? "v" : ">"} {title}</div>
+    <div class={`collapseable-content ${open ? "open" : "closed"}`}>
+        <slot />
+    </div>
+</span>
+
+<style is:inline>
+    .collapseable-header {
+        cursor: pointer;
+        font-style: italic;
+    }
+    .open {
+        visibility: visible;
+        /* display: initial; */
+    }
+    .closed {
+        /* display: none; */
+        visibility: hidden;
+    }
+
+    .no-select {
+        -webkit-touch-callout: none; /* iOS Safari */
+        -webkit-user-select: none; /* Safari */
+        -khtml-user-select: none; /* Konqueror HTML */
+        -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+        user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Edge, Opera and Firefox */
+    }
+</style>
+
+<script>
+    let collapseableElements = document.getElementsByClassName(
+        "collapseable-header"
+    );
+    for (const collapseableElement of collapseableElements) {
+        collapseableElement.addEventListener("click", toggleCollapse);
+        // Add accessibility enter and spacebar event
+        collapseableElement.addEventListener("keypress", (event) => {
+            const keyboardEvent = event as KeyboardEvent;
+            if (!keyboardEvent || !(keyboardEvent.key === "Enter" || keyboardEvent.key === " ")) return;
+            toggleCollapse(event);
+        });
+    }
+
+    function toggleCollapse(event: Event){
+        let collapseableHeader = event.target as HTMLElement | null;
+            if (!collapseableHeader) return;
+
+            let collapseableContent =
+                collapseableHeader.parentElement?.querySelector(
+                    "[class^=collapseable-content]"
+                );
+            if (!collapseableContent) return;
+
+            if (collapseableContent.className === "collapseable-content open") {
+                // close content
+                collapseableContent.className = "collapseable-content closed";
+                // change visual indicator of header to closed
+                collapseableHeader.innerText =
+                    ">" + collapseableHeader.innerText.replace(/^./, "");
+            } else {
+                // open content
+                collapseableContent.className = "collapseable-content open";
+                // change visual indicator of header to open
+                collapseableHeader.innerText =
+                    "v" + collapseableHeader.innerText.replace(/^./, "");
+            }
+    }
+</script>

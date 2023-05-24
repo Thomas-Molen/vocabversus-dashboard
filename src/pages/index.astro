@@ -1,0 +1,70 @@
+---
+import Layout from "../layouts/Layout.astro";
+import CreateGame from "../components/CreateGame.astro";
+import InteractiveCard from "../components/InteractiveCard.astro";
+import Title from "../components/Title.astro";
+import Footer from "../components/Footer.astro";
+import Subtitle from "../components/Subtitle.astro";
+import SocialMediaIcon from "../components/SocialMediaIcon.astro";
+---
+<Layout title="VocabVersus">
+	<main class="container-fluid min-vh-100 welcome-container">
+		<div class="row d-flex justify-content-center">
+			<div class="d-none d-lg-block col-lg-5 col-xl-4 offset-xl-2 welcome-title">
+				<span style="font-size:75px">
+					<Title />
+				</span>
+				<div class="d-block title">
+					<div class="ms-3 mt-1">
+						<Subtitle onHoverIcon="🤯">Test your Vocabulary </Subtitle><br />
+						<Subtitle onHoverIcon="⚔️">Compete with others </Subtitle><br />
+						<Subtitle onHoverIcon="📺">On any device </Subtitle><br />
+					</div>
+				</div>
+			</div>
+			<div class="col-12 col-lg-5 col-xl-4 offset-lg-1 d-flex justify-content-center justify-content-lg-start">
+				<div class="create-game">
+					<InteractiveCard>
+						<CreateGame />
+					</InteractiveCard>
+				</div>
+			</div>
+			<div class="d-none d-xl-flex flex-column col-xl-1 justify-content-center align-items-end pe-4">
+					<SocialMediaIcon href={"https://www.thomasmolen.com"}><i class="bi bi-globe" title="Portfolio"></i></SocialMediaIcon><br />
+					<SocialMediaIcon href={"https://github.com/Thomas-Molen/VocabVersus"}><i class="bi bi-github" title="GitHub"></i></SocialMediaIcon><br />
+					<SocialMediaIcon href={"https://www.linkedin.com/in/thomas-van-der-molen-6427a7181/"}><i class="bi bi-linkedin" title="LinkedIn"></i></SocialMediaIcon>
+			</div>
+		</div>
+		<div class="row w-100 footer-container d-none d-md-block">
+			<Footer />
+		</div>
+	</main>
+</Layout>
+
+<style>
+	.welcome-container {
+		background-image: url("/assets/squares.svg");
+		background-position-y: bottom;
+		background-repeat: no-repeat;
+		background-size: cover;
+		padding-top: 5rem;
+	}
+
+	@media (min-width: 768px) { .welcome-container{ 
+		padding-top: 8rem;
+		padding-bottom: 8rem;
+	}}
+
+	.welcome-title {
+		margin-top: 7rem;
+	}
+
+	.create-game {
+		max-width: 400px;
+	}
+
+	.footer-container {
+		position: fixed;
+		bottom: 0;
+	}
+</style>

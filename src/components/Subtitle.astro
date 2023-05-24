@@ -1,0 +1,21 @@
+---
+export interface Props {
+    onHoverIcon: string;
+}
+
+const { onHoverIcon } = Astro.props;
+---
+
+<span class="fs-3 subtitle">
+    <slot /> <span class="subtitle-icon">{onHoverIcon}</span>
+</span>
+
+<style>
+    .subtitle-icon {
+        display: none;
+    }
+
+    .subtitle:hover .subtitle-icon {
+        display: inline-block;
+    }
+</style>

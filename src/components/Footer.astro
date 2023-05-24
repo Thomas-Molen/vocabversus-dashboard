@@ -1,0 +1,26 @@
+---
+import Tooltip from "./Tooltip.astro";
+---
+
+<div class="footer py-2 d-flex align-items-center justify-content-center">
+    Whole web application is Open Source! Don't forget to credit original author
+    <Tooltip>
+        <i class="bi bi-info author-info" slot="title"></i>
+        <span slot="text">
+            <i>Created by</i> Thomas van der Molen 🔧
+        </span>
+    </Tooltip>
+</div>
+
+<style>
+    .footer {
+        background-color: rgb(0, 0, 0);
+        color: var(--vv-white);
+    }
+
+    .author-info {
+        position: relative;
+        left: -3px;
+        cursor: pointer;
+    }
+</style>

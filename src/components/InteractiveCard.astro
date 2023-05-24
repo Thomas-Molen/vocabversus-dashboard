@@ -1,0 +1,88 @@
+<div class="interactive-card">
+    <div class="card-border"></div>
+    <div class="card-content">
+        <slot />
+    </div>
+</div>
+
+<style>
+    :root {
+        --card-color: #212121;
+    }
+
+    .interactive-card {
+        display: flex;
+        /* Border color */
+        background-color: #444444;
+        border-radius: 10px;
+        position: relative;
+    }
+
+    .interactive-card::before,
+    .interactive-card > .card-border {
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 500ms;
+        border-radius: inherit;
+        content: "";
+        height: 100%;
+        width: 100%;
+        position: absolute;
+        left: 0px;
+        top: 0px;
+        z-index: 2;
+    }
+
+    /* Card spotlight */
+    .interactive-card::before {
+        background: radial-gradient(
+            800px circle at var(--mouse-x) var(--mouse-y),
+            /* Hover spotlight color */ rgba(255, 255, 255, 0.02),
+            transparent 40%
+        );
+        z-index: 3;
+    }
+
+    /* Border splotlight */
+    .interactive-card > .card-border {
+        background: radial-gradient(
+            400px circle at var(--mouse-x) var(--mouse-y),
+            /* Hover spotlight color */ rgba(255, 255, 255, 0.3),
+            transparent 40%
+        );
+        z-index: 1;
+    }
+
+    /* Display spotlights on hover */
+    .interactive-card:hover::before,
+    .interactive-card:hover > .card-border {
+        opacity: 1;
+    }
+
+    .interactive-card > .card-content {
+        background-color: var(--card-color);
+        border-radius: inherit;
+        margin: 1px;
+        height: calc(100% - 2px);
+        width: calc(100% - 2px);
+        position: relative;
+        z-index: 2;
+    }
+</style>
+
+<script>
+    // Go through all cards and add mouse over check to set spotlight position if mouse is over the card
+    for (const card of document.getElementsByClassName("interactive-card")) {
+        (card as HTMLElement).addEventListener("mousemove", (event) => {
+            if (!event.target) return;
+            const targetCard = ((event.target as HTMLElement).closest(".interactive-card") as HTMLElement | null);
+            if (!targetCard) return;
+            const targetRect = targetCard.getBoundingClientRect();
+            const targetX = event.clientX - targetRect.left;
+            const targetY = event.clientY - targetRect.top;
+
+            targetCard.style.setProperty("--mouse-x", `${targetX}px`);
+            targetCard.style.setProperty("--mouse-y", `${targetY}px`);
+        });
+    }
+</script>

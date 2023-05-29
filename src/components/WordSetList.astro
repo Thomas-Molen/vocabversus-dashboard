@@ -8,7 +8,9 @@ const { id } = Astro.props;
 
 <div class="input-group" id="wordset-selector-list">
     <label class="input-group-text" for={id}>Wordset</label>
-    <select class="form-select" id={id} disabled></select>
+    <select class="form-select" id={id} disabled>
+        <option id="placeholder-option">loading...</option>
+    </select>
 </div>
 
 <style>
@@ -37,10 +39,11 @@ const { id } = Astro.props;
     .then((json) => json as WordSetResponse)
     // Get all wordsets and set them in the selector list
     .then((response) => {
-        let wordsetSelector = document.getElementById("wordset-selector-list")?.querySelector("select") as HTMLOptionElement | null;
+        const wordsetSelector = document.getElementById("wordset-selector-list")?.querySelector("select") as HTMLOptionElement | null;
         if (wordsetSelector && response.wordSets.length > 0) {
             for (const wordSet of response.wordSets) {
-                let option = document.createElement("option");
+                wordsetSelector.removeChild
+                const option = document.createElement("option");
                 option.textContent = wordSet.name;
                 option.value = wordSet.id;
                 wordsetSelector?.appendChild(option);
@@ -50,12 +53,17 @@ const { id } = Astro.props;
     })
     // If wordsets could not be returned, append a dummy option to indicate it finished loading
     .catch((error) => {
-        let wordsetSelector = document.getElementById("wordset-selector-list")?.querySelector("select") as HTMLOptionElement | null;
+        const wordsetSelector = document.getElementById("wordset-selector-list")?.querySelector("select") as HTMLOptionElement | null;
         if (wordsetSelector) {
-            let option = document.createElement("option");
+            const option = document.createElement("option");
                 option.textContent = "No wordsets found 😢";
                 option.value = "unkown";
                 wordsetSelector?.appendChild(option);
         }
+    })
+    // Remove placeholder option
+    .finally(() => {
+        const placeholder = document.getElementById("placeholder-option");
+        placeholder.parentNode.removeChild(placeholder)
     });
 </script>

@@ -22,6 +22,12 @@ import Collapse from "./Collapse.astro";
         <div>
             <Collapse title="advanced">
                 <div class="ms-1">
+                    <span class="form-text">Required password to join</span>
+                    <div class="input-group">
+                        <span class="input-group-text" id="password-field">Password</span>
+                        <input type="text" max="50" value="" class="form-control" id="password-input" placeholder="" aria-describedby="password-field">
+                    </div>
+
                     <span class="form-text">Delay in seconds before next round starts</span>
                     <div class="input-group">
                         <span class="input-group-text" id="round-delay-field">Count down</span>
@@ -71,6 +77,7 @@ import Collapse from "./Collapse.astro";
         WordSet: string;
         MaxPlayerCount: number;
         Rounds: number;
+        Password: string | null;
         Settings: GameSettings;
     };
     type GameSettings = {
@@ -107,6 +114,7 @@ import Collapse from "./Collapse.astro";
             WordSet: (document.getElementById("wordset-input") as HTMLInputElement | null)?.value ?? "", 
             Rounds: parseInt((document.getElementById("rounds-input") as HTMLInputElement | null)?.value ?? "20"),
             MaxPlayerCount: parseInt((document.getElementById("players-input") as HTMLInputElement | null)?.value ?? "4"),
+            Password: (document.getElementById("password-input") as HTMLInputElement | null)?.value,
             Settings: {
                 RoundEndDelay: parseInt((document.getElementById("round-delay-input") as HTMLInputElement | null)?.value ?? "4"),
                 MinRequiredChars: parseInt((document.getElementById("min-characters-input") as HTMLInputElement | null)?.value ?? "4"),

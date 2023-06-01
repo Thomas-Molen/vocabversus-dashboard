@@ -3,7 +3,7 @@ import WordSetList from "./WordSetList.astro";
 import Collapse from "./Collapse.astro";
 ---
 <div class="p-4 create-game">
-    <h1 style="font-size: 2.5rem;">Create a game</h1>
+    <span class="create-game-title">Create game</span>
     <form id="create-game-form">
         <div class="mb-2">
             <WordSetList id="wordset-input" />
@@ -58,17 +58,28 @@ import Collapse from "./Collapse.astro";
                     <small>Please check selected options, or try again later</small>
                 </div>
             </div>
-            <button id="create-game-button" class="w-100 btn btn-outline-light" type="submit">Create</button>
+            <button id="create-game-button" class="w-100 btn btn-outline-light" type="submit" disabled>Create</button>
         </div>
     </form>
 </div>
 
 <style>
     .create-game {
+        margin-top: 10px;
         background-image: url("/assets/squares.svg");
         background-position-y: bottom;
         background-repeat: no-repeat;
         background-size: contain;
+    }
+
+    .create-game-title{
+        font-size: 2.5rem;
+        padding-right: 2px;
+        padding-left: 2px;
+        background-color: var(--vv-primary);
+        position: absolute;
+        top: -35px;
+        left: 15px;
     }
 </style>
 
@@ -91,8 +102,7 @@ import Collapse from "./Collapse.astro";
         gameId: string;
     };
 
-    document
-        .getElementById("create-game-form")
+    document.getElementById("create-game-form")
         ?.addEventListener("submit", (event) => {
             event.preventDefault();
             createGame();
@@ -114,7 +124,7 @@ import Collapse from "./Collapse.astro";
             WordSet: (document.getElementById("wordset-input") as HTMLInputElement | null)?.value ?? "", 
             Rounds: parseInt((document.getElementById("rounds-input") as HTMLInputElement | null)?.value ?? "20"),
             MaxPlayerCount: parseInt((document.getElementById("players-input") as HTMLInputElement | null)?.value ?? "4"),
-            Password: (document.getElementById("password-input") as HTMLInputElement | null)?.value,
+            Password: (document.getElementById("password-input") as HTMLInputElement | null)?.value ?? null,
             Settings: {
                 RoundEndDelay: parseInt((document.getElementById("round-delay-input") as HTMLInputElement | null)?.value ?? "4"),
                 MinRequiredChars: parseInt((document.getElementById("min-characters-input") as HTMLInputElement | null)?.value ?? "4"),

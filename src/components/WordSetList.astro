@@ -49,6 +49,9 @@ const { id } = Astro.props;
                 wordsetSelector?.appendChild(option);
             }
             wordsetSelector.disabled = false;
+
+            const createGameButton = document.getElementById("create-game-button") as HTMLButtonElement | null;
+            if (createGameButton) createGameButton.disabled = false;
         }
     })
     // If wordsets could not be returned, append a dummy option to indicate it finished loading
@@ -60,10 +63,13 @@ const { id } = Astro.props;
                 option.value = "unkown";
                 wordsetSelector?.appendChild(option);
         }
+
+        const createGameButton = document.getElementById("create-game-button") as HTMLButtonElement | null;
+        if (createGameButton) createGameButton.disabled = true;
     })
     // Remove placeholder option
     .finally(() => {
         const placeholder = document.getElementById("placeholder-option");
-        placeholder.parentNode.removeChild(placeholder)
+        if (placeholder) placeholder.parentNode?.removeChild(placeholder)
     });
 </script>

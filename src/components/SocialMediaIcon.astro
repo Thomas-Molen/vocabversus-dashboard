@@ -6,7 +6,7 @@ export interface Props {
 const { href = "javascript:void(0);" } = Astro.props;
 ---
 
-<a class="btn btn-outline-dark rounded-circle social-media-icon" href={href} target="_blank">
+<a class="btn social-media-icon" href={href} target="_blank">
     <slot />
 </a>
 
@@ -15,5 +15,8 @@ const { href = "javascript:void(0);" } = Astro.props;
         color: var(--vv-white);
         font-size: 50px;
         padding: 0px;
+    }
+    .social-media-icon:hover{
+        filter: brightness(1.1);
     }
 </style>

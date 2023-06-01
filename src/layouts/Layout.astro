@@ -28,8 +28,8 @@ const { title } = Astro.props;
 <style is:global>
 	:root {
 		--vv-white: #c9c9c9;
-		--vv-primary-dark: #242424;
-		--vv-primary-dark-accent: #444444;
+		--vv-primary: #242424;
+		--vv-primary-accent: #444444;
 	}
 	.vocabversus-body {
 		font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
@@ -38,7 +38,7 @@ const { title } = Astro.props;
 
 		color-scheme: light dark;
 		color: var(--vv-white);
-		background-color: var(--vv-primary-dark);
+		background-color: var(--vv-primary);
 
 		font-synthesis: none;
 		text-rendering: optimizeLegibility;
@@ -54,7 +54,7 @@ const { title } = Astro.props;
 	.form-check-input:focus,
 	.btn-close:focus {
 		box-shadow: 0 0 0 0.15rem #ffffff81;
-		border-color: var(--vv-primary-dark-accent);
+		border-color: var(--vv-primary-accent);
 	}
 
 	/* General color changes */
@@ -70,7 +70,7 @@ const { title } = Astro.props;
 	.form-check-input:checked {
 		background-color: #00000000;
 		color: var(--vv-white);
-		border-color: var(--vv-primary-dark-accent);
+		border-color: var(--vv-primary-accent);
 	}
 
 	.input-group-text {
